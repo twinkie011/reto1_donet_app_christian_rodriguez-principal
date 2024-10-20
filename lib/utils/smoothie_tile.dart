@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class DonutTile extends StatelessWidget {
-  final String donutFlavor;
-  final String donutPrice;
-  final dynamic donutColor;
+class SmoothieTile extends StatelessWidget {
+  final String smoothieFlavor; // Renombrado
+  final String smoothiePrice;
+  final dynamic smoothieColor;
   final String imageName;
   final double borderRadius = 24;
   final VoidCallback addToCart; // Callback para agregar al carrito
 
-  const DonutTile({
+  const SmoothieTile({
     super.key,
-    required this.donutFlavor,
-    required this.donutPrice,
-    this.donutColor,
+    required this.smoothieFlavor,
+    required this.smoothiePrice,
+    this.smoothieColor,
     required this.imageName,
-    required this.addToCart, // Recibe el callback en el constructor
+    required this.addToCart, // Aceptar el callback en el constructor
   });
 
   @override
@@ -23,18 +23,18 @@ class DonutTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Container(
         decoration: BoxDecoration(
-          color: donutColor[50],
+          color: smoothieColor[50],
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
           children: [
-            // Donut price
+            // Smoothie price
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: donutColor[100],
+                    color: smoothieColor[100],
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(borderRadius),
                       bottomLeft: Radius.circular(borderRadius),
@@ -42,37 +42,37 @@ class DonutTile extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                   child: Text(
-                    '\$$donutPrice',
+                    '\$$smoothiePrice',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: donutColor[800],
+                      color: smoothieColor[800],
                     ),
                   ),
                 ),
               ],
             ),
-            // Donut picture
+            // Smoothie picture
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                child: Image.asset(imageName, fit: BoxFit.contain), // Ajustado para encajar bien
+                child: Image.asset(imageName, fit: BoxFit.contain),
               ),
             ),
-            // Donut flavor text
+            // Smoothie flavor text
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 4),
               child: Text(
-                donutFlavor,
+                smoothieFlavor,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: donutColor[1000],
+                  color: smoothieColor[1000],
                 ),
               ),
             ),
             const SizedBox(height: 4),
-            const Text('Dunkin\'s'),
+            const Text('Smoothie Shop'),
 
             // Heart icon + Add button
             Padding(
@@ -80,12 +80,11 @@ class DonutTile extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Heart icon
                   IconButton(
-                    icon: Icon(Icons.favorite_border),
+                    icon: Icon(Icons.favorite_border), // Cambiado a un ícono de favorito vacío
                     color: Colors.pink[400],
                     onPressed: () {
-                      // Acción del ícono de favorito (opcional)
+                      // Lógica para marcar como favorito
                     },
                   ),
                   // Botón "Add" como texto negro sin fondo
