@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:reto1_donet_app_christian_rodriguez/tab/Burger_tab.dart';
 import 'package:reto1_donet_app_christian_rodriguez/tab/Donut_tab.dart';
 import 'package:reto1_donet_app_christian_rodriguez/tab/Pancakes_tab.dart';
 import 'package:reto1_donet_app_christian_rodriguez/tab/Pizza_tab.dart';
 import 'package:reto1_donet_app_christian_rodriguez/tab/Smoothie_tab.dart';
-import 'package:reto1_donet_app_christian_rodriguez/utils/my_tab.dart';
+import 'package:reto1_donet_app_christian_rodriguez/pages/login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,40 +15,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Lista de tabs usando MyTab
-List<Tab> myTabs = [
-    // Donut tab
+  List<Tab> myTabs = [
     Tab(
       icon: const ImageIcon(AssetImage('lib/icons/donut.png')),
-      text: 'Donuts', ),
-
-    // Burger tab
+      text: 'Donuts',
+    ),
     Tab(
       icon: const ImageIcon(AssetImage('lib/icons/burger.png')),
-      text: 'Burgers',),
-
-    // Smoothie tab
+      text: 'Burgers',
+    ),
     Tab(
       icon: const ImageIcon(AssetImage('lib/icons/smoothie.png')),
-      text: 'Smoothies',),
-
-    // Pancake tab
+      text: 'Smoothies',
+    ),
     Tab(
       icon: const ImageIcon(AssetImage('lib/icons/pancakes.png')),
-      text: 'Pancakes', ),
-
-    // Pizza tab
+      text: 'Pancakes',
+    ),
     Tab(
       icon: const ImageIcon(AssetImage('lib/icons/pizza.png')),
-      text: 'Pizzas',),
+      text: 'Pizzas',
+    ),
   ];
 
-
-  // Variables para controlar el número de items y el monto total
   int itemCount = 0;
   double totalAmount = 0.0;
 
-  // Función para agregar productos
   void addItem(double price) {
     setState(() {
       itemCount++;
@@ -55,41 +48,95 @@ List<Tab> myTabs = [
     });
   }
 
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    // Redirigir al usuario a la pantalla de login después de cerrar sesión
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+
     return DefaultTabController(
       length: myTabs.length,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: IconButton(
-              icon: Icon(
-                Icons.menu,
-                color: Colors.grey[800],
-                size: 36,
-              ),
-              onPressed: () {
-                print('boton menu');
-              },
-            ),
-          ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 16.0),
+              padding: const EdgeInsets.only(right: 24.0),
               child: IconButton(
-                icon: Icon(
-                  Icons.person,
-                  color: Colors.grey[800],
-                  size: 36,
-                ),
+                icon: Icon(Icons.person, color: Colors.grey[800], size: 36),
                 onPressed: () {
-                  print('otra cosa');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                  );
                 },
               ),
             ),
           ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              UserAccountsDrawerHeader(
+                accountEmail: Text(user != null ? user.email ?? "Correo no disponible" : "Usuario no autenticado"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Text(
+                    user != null ? user.email![0].toUpperCase() : "U",
+                    style: const TextStyle(fontSize: 40.0, color: Colors.blue),
+                  ),
+                ),
+                accountName: null,
+              ),
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Inicio'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.fastfood),
+                title: const Text('Comida'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.shopping_cart),
+                title: const Text('Mercado'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.card_giftcard),
+                title: const Text('Método de Pago'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              // Botón de cerrar sesión
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Cerrar Sesión'),
+                onTap: () {
+                  signOut(); // Llamada a la función para cerrar sesión
+                },
+              ),
+            ],
+          ),
         ),
         body: Column(
           children: [
@@ -104,41 +151,30 @@ List<Tab> myTabs = [
                   Text(
                     'Eat ',
                     style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline),
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ],
               ),
             ),
-            // Tab bar con myTabs
             TabBar(
               tabs: myTabs,
               labelColor: Colors.black,
               indicatorColor: Colors.pink,
             ),
-            // Tab bar view
             Expanded(
               child: TabBarView(
                 children: [
-                  // Donut tab
                   DonutTab(addItem: addItem),
-
-                  // Burger tab
                   BurgerTab(addItem: addItem),
-
-                  // Smoothie tab
                   SmoothieTab(addItem: addItem),
-
-                  // Pancake tab
                   PancakeTab(addItem: addItem),
-
-                  // Pizza tab
                   PizzaTab(addItem: addItem),
                 ],
               ),
             ),
-            // New Section: Items Summary and View Cart Button
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -146,7 +182,6 @@ List<Tab> myTabs = [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Text for items and price
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -168,13 +203,12 @@ List<Tab> myTabs = [
                           ),
                         ],
                       ),
-                      // View Cart button
                       ElevatedButton(
                         onPressed: () {
                           // Lógica para ver el carrito
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pink[400], // Color rosa
+                          backgroundColor: Colors.pink[400],
                         ),
                         child: const Text(
                           'View Cart',
