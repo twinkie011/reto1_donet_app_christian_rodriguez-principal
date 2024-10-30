@@ -1,39 +1,71 @@
 import 'package:flutter/material.dart';
-import '../utils/smoothie_tile.dart';  // Asegúrate de que el archivo existe y está en la ruta correcta.
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SmoothieTab extends StatelessWidget {
-  final List smoothiesOnSale = [
-    ["Mango Magic", "36", Colors.orange, "lib/images/mango_smoothie.png"],
-    ["Berry Blast", "45", Colors.purple, "lib/images/berry_smoothie.png"],
-    ["Green Detox", "50", Colors.green, "lib/images/green_smoothie.png"],
-    ["Tropical Sunrise", "60", Colors.yellow, "lib/images/strawberry_smoothie.png"],
-    ["Peach Paradise", "55", Colors.pink, "lib/images/peach_smoothie.png"],
-    ["Chocolate Dream", "65", Colors.brown, "lib/images/chocolate_smoothie.png"],
-    ["Pineapple Punch", "48", Colors.yellowAccent, "lib/images/pineapple_smoothie.png"],
-    ["Blueberry Bliss", "53", Colors.blue, "lib/images/blueberry_smoothie.png"],
-  ];
+import '../utils/smoothie_tile.dart'; // Asegúrate de que el archivo existe y está en la ruta correcta.
 
+class SmoothieTab extends StatefulWidget {
   final Function(double) addItem; // Función para agregar un item al carrito
 
-  SmoothieTab({super.key, required this.addItem}); // Recibe la función en el constructor
+  const SmoothieTab({super.key, required this.addItem}); // Recibe la función en el constructor
+
+  @override
+  _SmoothieTabState createState() => _SmoothieTabState();
+}
+
+class _SmoothieTabState extends State<SmoothieTab> {
+  final CollectionReference smoothiesRef = FirebaseFirestore.instance
+      .collection('smoothies'); // Referencia a la colección en Firestore
+  List<dynamic> smoothiesOnSale = []; // Lista vacía que se llenará con los datos de Firestore
+
+  @override
+  void initState() {
+    super.initState();
+    getSmoothiesData(); // Llamamos la función para obtener los datos al iniciar
+  }
+
+  void getSmoothiesData() async {
+    try {
+      // Obtener los datos de la colección 'smoothies'
+      smoothiesRef.snapshots().listen((snapshot) {
+        setState(() {
+          // Convertir los documentos en una lista
+          smoothiesOnSale = snapshot.docs.map((doc) => doc.data()).toList();
+        });
+      });
+    } catch (e) {
+      // Manejar errores
+      print('Error al obtener datos: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      itemCount: smoothiesOnSale.length,
+      itemCount: smoothiesOnSale.length, // longitud del arreglo dinámico
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 1 / 1.5,
       ),
       itemBuilder: (context, index) {
+        var smoothie = smoothiesOnSale[index];
+
+        // Imprimir valores para debugging
+        // print(
+        //     'Nombre: ${smoothie['nombre']}, Precio: ${smoothie['precio']}, Color: ${smoothie['color']}');
+
         return SmoothieTile(
-          smoothieFlavor: smoothiesOnSale[index][0],
-          smoothiePrice: smoothiesOnSale[index][1],
-          smoothieColor: smoothiesOnSale[index][2],
-          imageName: smoothiesOnSale[index][3],
+          smoothieFlavor: smoothie['nombre'] is String
+              ? smoothie['nombre']
+              : smoothie['nombre'].toString(), // Asegúrate de que sea un String
+          smoothiePrice: smoothie['precio'] is String
+              ? smoothie['precio']
+              : smoothie['precio'].toString(), // Asegúrate de que sea un String
+          smoothieColor: Color(smoothie['color']), // Convertir el entero en un Color
+          imageName: smoothie['img'], // Cambié 'image' a 'img'
           addToCart: () {
-            addItem(double.parse(smoothiesOnSale[index][1])); // Llama a la función addItem con el precio
+            widget.addItem(double.parse(smoothie['precio']
+                .toString())); // Llama a la función addItem con el precio
           },
         );
       },

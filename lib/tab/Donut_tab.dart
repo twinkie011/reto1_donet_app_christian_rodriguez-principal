@@ -1,43 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../utils/donut_tile.dart';
 
-class DonutTab extends StatelessWidget {
-  // Lista de donuts
-  final List donutsOnsale = [
-    ["Ice Cream", "36", Colors.blue, "lib/images/chocolate_donut.png"],
-    ["Strawberry", "45", Colors.brown, "lib/images/grape_donut.png"],
-    ["Grape Ape", "84", Colors.red, "lib/images/icecream_donut.png"],
-    ["Choco", "95", Colors.pink, "lib/images/strawberry_donut.png"],
-    ["Vanilla", "40", Colors.grey, "lib/images/vanilla_donut.png"],
-    ["Caramel", "50", Colors.orange, "lib/images/caramel_donut.png"],
-    ["Blueberry", "55", Colors.purple, "lib/images/blueberry_donut.png"],
-    ["Mint Chocolate", "60", Colors.green, "lib/images/mint_chocolate_donut.png"],
-  ];
-
+class DonutTab extends StatefulWidget {
   final Function(double) addItem; // Función para agregar un item
 
-  // Constructor que recibe la función para agregar un item
-  DonutTab({super.key, required this.addItem});
+  const DonutTab({super.key, required this.addItem});
+
+  @override
+  _DonutTabState createState() => _DonutTabState();
+}
+
+class _DonutTabState extends State<DonutTab> {
+  final CollectionReference productosRef = FirebaseFirestore.instance
+      .collection('donas'); // Referencia a la colección en Firestore
+  List<dynamic> donutsOnsale =
+      []; // Lista vacía que se llenará con los datos de Firestore
+
+  @override
+  void initState() {
+    super.initState();
+    getDonutsData(); // Llamamos la función para obtener los datos al iniciar
+  }
+
+  void getDonutsData() async {
+    try {
+      // Obtener los datos de la colección 'donas'
+      productosRef.snapshots().listen((snapshot) {
+        setState(() {
+          // Convertir los documentos en una lista
+          donutsOnsale = snapshot.docs.map((doc) => doc.data()).toList();
+        });
+      });
+    } catch (e) {
+      // Manejar errores
+      // print('Error al obtener datos: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      itemCount: donutsOnsale.length, // longitud del arreglo
+      itemCount: donutsOnsale.length, // longitud del arreglo dinámico
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 1 / 1.5,
       ),
       itemBuilder: (context, index) {
+        var donut = donutsOnsale[index];
+
+        // Imprimir valores para debugging
+        // print(
+        //     'Nombre: ${donut['nombre']}, Precio: ${donut['precio']}, Color: ${donut['color']}');
+
         return DonutTile(
-          donutFlavor: donutsOnsale[index][0],
-          donutPrice: donutsOnsale[index][1],
-          donutColor: donutsOnsale[index][2],
-          imageName: donutsOnsale[index][3],
-          // Agregar botón "Add"
+          donutFlavor: donut['nombre'] is String
+              ? donut['nombre']
+              : donut['nombre'].toString(),
+          donutPrice: donut['precio'] is String
+              ? donut['precio']
+              : donut['precio'].toString(),
+          donutColor: Color(donut['color']), // Convertir el entero en un Color
+          imageName: donut['img'],
           addToCart: () {
-            addItem(double.parse(donutsOnsale[index][1])); // Llama a la función addItem con el precio
+            widget.addItem(double.parse(donut['precio']
+                .toString())); // Llama a la función addItem con el precio
           },
         );
       },

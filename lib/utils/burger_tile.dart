@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class BurgerTile extends StatelessWidget {
   final String burgerName;
   final String burgerPrice;
-  final dynamic burgerColor;
+  final Color burgerColor; // Cambiado a Color en vez de dynamic
   final String imageName;
   final double borderRadius = 24;
   final VoidCallback addToCart; // Callback para agregar al carrito
@@ -12,9 +12,9 @@ class BurgerTile extends StatelessWidget {
     super.key,
     required this.burgerName,
     required this.burgerPrice,
-    this.burgerColor,
+    required this.burgerColor, // Ahora es requerido y tipo Color
     required this.imageName,
-    required this.addToCart, // Aceptar el callback en el constructor
+    required this.addToCart,
   });
 
   @override
@@ -23,7 +23,7 @@ class BurgerTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Container(
         decoration: BoxDecoration(
-          color: burgerColor[50],
+          color: burgerColor, // Usa directamente el Color
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
@@ -34,7 +34,7 @@ class BurgerTile extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: burgerColor[100],
+                    color: burgerColor.withOpacity(0.9), // Ajusta el color
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(borderRadius),
                       bottomLeft: Radius.circular(borderRadius),
@@ -46,7 +46,7 @@ class BurgerTile extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: burgerColor[800],
+                      color: Colors.white, // Cambiado a blanco para legibilidad
                     ),
                   ),
                 ),
@@ -67,7 +67,7 @@ class BurgerTile extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: burgerColor[1000],
+                  color: Colors.black, // Color del texto para mejor contraste
                 ),
               ),
             ),

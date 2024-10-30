@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class DonutTile extends StatelessWidget {
   final String donutFlavor;
   final String donutPrice;
-  final dynamic donutColor;
+  final Color donutColor; // Cambiado a Color
   final String imageName;
+
   final double borderRadius = 24;
   final VoidCallback addToCart; // Callback para agregar al carrito
 
@@ -12,7 +13,7 @@ class DonutTile extends StatelessWidget {
     super.key,
     required this.donutFlavor,
     required this.donutPrice,
-    this.donutColor,
+    required this.donutColor, // Requerido ahora
     required this.imageName,
     required this.addToCart, // Recibe el callback en el constructor
   });
@@ -23,7 +24,7 @@ class DonutTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Container(
         decoration: BoxDecoration(
-          color: donutColor[50],
+          color: donutColor, // Usa directamente donutColor
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
@@ -34,19 +35,21 @@ class DonutTile extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: donutColor[100],
+                    color: donutColor
+                        .withOpacity(0.9), // Cambia según sea necesario
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(borderRadius),
                       bottomLeft: Radius.circular(borderRadius),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                   child: Text(
                     '\$$donutPrice',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: donutColor[800],
+                      color: Colors.white, // Cambiar a un color que se vea bien
                     ),
                   ),
                 ),
@@ -55,8 +58,9 @@ class DonutTile extends StatelessWidget {
             // Donut picture
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                child: Image.asset(imageName, fit: BoxFit.contain), // Ajustado para encajar bien
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                child: Image.asset(imageName, fit: BoxFit.contain),
               ),
             ),
             // Donut flavor text
@@ -67,7 +71,7 @@ class DonutTile extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: donutColor[1000],
+                  color: Colors.black, // Cambiar a un color que se vea bien
                 ),
               ),
             ),
@@ -90,9 +94,10 @@ class DonutTile extends StatelessWidget {
                   ),
                   // Botón "Add" como texto negro sin fondo
                   TextButton(
-                    onPressed: addToCart, // Llama al callback al presionar el botón
+                    onPressed: addToCart,
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                       backgroundColor: Colors.transparent, // Sin fondo
                     ),
                     child: const Text(

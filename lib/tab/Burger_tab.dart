@@ -1,40 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../utils/burger_tile.dart';
 
-class BurgerTab extends StatelessWidget {
-  final List burgersOnSale = [
-    ["Classic Burger", "50", Colors.brown, "lib/images/classic_burger.png"],
-    ["Cheese Burger", "60", Colors.yellow, "lib/images/cheese_burger.png"],
-    ["Bacon Burger", "70", Colors.red, "lib/images/bacon_burger.png"],
-    ["Vegan Burger", "65", Colors.green, "lib/images/vegan_burger.png"],
-    ["BBQ Burger", "75", Colors.deepOrange, "lib/images/bbq_burger.png"],
-    ["Double Cheese Burger", "85", Colors.amber, "lib/images/double_cheese_burger.png"],
-    ["Spicy Chicken Burger", "80", Colors.orange, "lib/images/spicy_chicken_burger.png"],
-    ["Mushroom Burger", "68", Colors.grey, "lib/images/mushroom_burger.png"],
-  ];
-
+class BurgerTab extends StatefulWidget {
   final Function(double) addItem; // Función para agregar un item
 
-  BurgerTab({super.key, required this.addItem}); // Recibe la función en el constructor
+  const BurgerTab({super.key, required this.addItem});
+
+  @override
+  _BurgerTabState createState() => _BurgerTabState();
+}
+
+class _BurgerTabState extends State<BurgerTab> {
+  final CollectionReference hamburguesasRef = FirebaseFirestore.instance
+      .collection('hamburguesas'); // Referencia a la colección en Firestore
+  List<dynamic> burgersOnSale =
+      []; // Lista vacía que se llenará con los datos de Firestore
+
+  @override
+  void initState() {
+    super.initState();
+    getBurgersData(); // Llamamos la función para obtener los datos al iniciar
+  }
+
+  void getBurgersData() async {
+    try {
+      // Obtener los datos de la colección 'hamburguesas'
+      hamburguesasRef.snapshots().listen((snapshot) {
+        setState(() {
+          // Convertir los documentos en una lista
+          burgersOnSale = snapshot.docs.map((doc) => doc.data()).toList();
+        });
+      });
+    } catch (e) {
+      // Manejar errores
+      // print('Error al obtener datos: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      itemCount: burgersOnSale.length,
+      itemCount: burgersOnSale.length, // longitud del arreglo dinámico
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 1 / 1.5,
       ),
       itemBuilder: (context, index) {
+        var burger = burgersOnSale[index];
+
+        // Imprimir valores para debugging
+        // print('Nombre: ${burger['nombre']}, Precio: ${burger['precio']}, Color: ${burger['color']}');
+
         return BurgerTile(
-          burgerName: burgersOnSale[index][0],
-          burgerPrice: burgersOnSale[index][1],
-          burgerColor: burgersOnSale[index][2],
-          imageName: burgersOnSale[index][3],
+          burgerName: burger['nombre'] is String
+              ? burger['nombre']
+              : burger['nombre'].toString(), // Asegúrate de que sea un String
+          burgerPrice: burger['precio'] is String
+              ? burger['precio']
+              : burger['precio'].toString(), // Asegúrate de que sea un String
+          burgerColor:
+              Color(burger['color']), // Convertir el entero en un Color
+          imageName: burger['img'],
           addToCart: () {
-            addItem(double.parse(burgersOnSale[index][1])); // Llama a la función addItem con el precio
+            widget.addItem(double.parse(burger['precio']
+                .toString())); // Llama a la función addItem con el precio
           },
         );
       },
