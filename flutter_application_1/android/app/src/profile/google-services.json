@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "908843670295",
+    "project_id": "moviles8schristian",
+    "storage_bucket": "moviles8schristian.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908843670295:android:f5bc44ecb7e905c5097552",
+        "android_client_info": {
+          "package_name": "com.donet.reto1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "908843670295-u445d8ugr8d1vv7dhe7rndq7hubct9r4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNaOTaSIxXgfKGi5WHtmiovcXdOa7wRwc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "908843670295-u445d8ugr8d1vv7dhe7rndq7hubct9r4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "908843670295-56und4r88ji5u2uslmd3agt30aple9ie.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.reto1DonetAppChristianRodriguez"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
