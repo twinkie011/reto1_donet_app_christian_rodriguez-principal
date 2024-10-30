@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PancakeTile extends StatelessWidget {
   final String pancakeName;
   final String pancakePrice;
-  final dynamic pancakeColor;
+  final Color pancakeColor;
   final String imageName;
   final double borderRadius = 24;
   final VoidCallback addToCart; // Callback para agregar al carrito
@@ -12,7 +12,7 @@ class PancakeTile extends StatelessWidget {
     super.key,
     required this.pancakeName,
     required this.pancakePrice,
-    this.pancakeColor,
+    required this.pancakeColor,
     required this.imageName,
     required this.addToCart, // Aceptar el callback en el constructor
   });
@@ -23,7 +23,7 @@ class PancakeTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Container(
         decoration: BoxDecoration(
-          color: pancakeColor[50],
+          color: pancakeColor.withOpacity(0.9),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
@@ -34,7 +34,7 @@ class PancakeTile extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: pancakeColor[100],
+                    color: pancakeColor.withOpacity(0.9),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(borderRadius),
                       bottomLeft: Radius.circular(borderRadius),
@@ -46,7 +46,7 @@ class PancakeTile extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: pancakeColor[800],
+                      color:  Colors.white,
                     ),
                   ),
                 )
@@ -67,7 +67,7 @@ class PancakeTile extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: pancakeColor[1000],
+                  color: Colors.black,
                 ),
               ),
             ),

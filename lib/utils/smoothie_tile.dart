@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SmoothieTile extends StatelessWidget {
   final String smoothieFlavor; // Renombrado
   final String smoothiePrice;
-  final dynamic smoothieColor;
+  final Color smoothieColor;
   final String imageName;
   final double borderRadius = 24;
   final VoidCallback addToCart; // Callback para agregar al carrito
@@ -12,7 +12,7 @@ class SmoothieTile extends StatelessWidget {
     super.key,
     required this.smoothieFlavor,
     required this.smoothiePrice,
-    this.smoothieColor,
+    required this.smoothieColor,
     required this.imageName,
     required this.addToCart, // Aceptar el callback en el constructor
   });
@@ -23,7 +23,7 @@ class SmoothieTile extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Container(
         decoration: BoxDecoration(
-          color: smoothieColor[50],
+          color: smoothieColor.withOpacity(0.9),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
@@ -34,19 +34,20 @@ class SmoothieTile extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: smoothieColor[100],
+                    color: smoothieColor.withOpacity(0.9),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(borderRadius),
                       bottomLeft: Radius.circular(borderRadius),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                   child: Text(
                     '\$$smoothiePrice',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: smoothieColor[800],
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -55,7 +56,8 @@ class SmoothieTile extends StatelessWidget {
             // Smoothie picture
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 child: Image.asset(imageName, fit: BoxFit.contain),
               ),
             ),
@@ -67,7 +69,7 @@ class SmoothieTile extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: smoothieColor[1000],
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -81,7 +83,8 @@ class SmoothieTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.favorite_border), // Cambiado a un ícono de favorito vacío
+                    icon: Icon(Icons
+                        .favorite_border), // Cambiado a un ícono de favorito vacío
                     color: Colors.pink[400],
                     onPressed: () {
                       // Lógica para marcar como favorito
@@ -89,9 +92,11 @@ class SmoothieTile extends StatelessWidget {
                   ),
                   // Botón "Add" como texto negro sin fondo
                   TextButton(
-                    onPressed: addToCart, // Llama al callback al presionar el botón
+                    onPressed:
+                        addToCart, // Llama al callback al presionar el botón
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                       backgroundColor: Colors.transparent, // Sin fondo
                     ),
                     child: const Text(

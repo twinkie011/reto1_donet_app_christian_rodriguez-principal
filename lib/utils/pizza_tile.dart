@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PizzaTile extends StatelessWidget {
   final String pizzaFlavor; // Renombrado
   final String pizzaPrice;
-  final dynamic pizzaColor;
+  final Color pizzaColor;
   final String imageName;
   final double borderRadius = 24;
   final VoidCallback addToCart; // Callback para agregar al carrito
@@ -12,9 +12,9 @@ class PizzaTile extends StatelessWidget {
     super.key,
     required this.pizzaFlavor,
     required this.pizzaPrice,
-    this.pizzaColor,
+    required this.pizzaColor,
     required this.imageName,
-    required this.addToCart, required String pizzaName, // Aceptar el callback en el constructor
+    required this.addToCart, // Aceptar el callback en el constructor
   });
 
   @override
@@ -24,7 +24,7 @@ class PizzaTile extends StatelessWidget {
       child: Container(
         height: 250, // Ajusta la altura para evitar desbordamientos
         decoration: BoxDecoration(
-          color: pizzaColor[50],
+          color: pizzaColor.withOpacity(0.9),
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
@@ -35,19 +35,20 @@ class PizzaTile extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: pizzaColor[100],
+                    color: pizzaColor.withOpacity(0.9),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(borderRadius),
                       bottomLeft: Radius.circular(borderRadius),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 18),
                   child: Text(
                     '\$$pizzaPrice',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
-                      color: pizzaColor[800],
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -56,7 +57,8 @@ class PizzaTile extends StatelessWidget {
             // Pizza picture
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 child: Image.asset(imageName), // Se eliminó fit: BoxFit.contain
               ),
             ),
@@ -65,10 +67,10 @@ class PizzaTile extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 4),
               child: Text(
                 pizzaFlavor,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: pizzaColor[1000],
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -83,7 +85,7 @@ class PizzaTile extends StatelessWidget {
                 children: [
                   // Heart icon
                   IconButton(
-                    icon: Icon(Icons.favorite_border),
+                    icon: const Icon(Icons.favorite_border),
                     color: Colors.pink[400],
                     onPressed: () {
                       // Lógica para marcar como favorito
@@ -91,9 +93,11 @@ class PizzaTile extends StatelessWidget {
                   ),
                   // Botón "Add" como texto negro sin fondo
                   TextButton(
-                    onPressed: addToCart, // Llama al callback al presionar el botón
+                    onPressed:
+                        addToCart, // Llama al callback al presionar el botón
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 20),
                       backgroundColor: Colors.transparent, // Sin fondo
                     ),
                     child: const Text(
