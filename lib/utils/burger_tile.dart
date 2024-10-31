@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BurgerTile extends StatelessWidget {
-  final String burgerName;
+  final String burgerName;  
   final String burgerPrice;
   final Color burgerColor; // Cambiado a Color en vez de dynamic
   final String imageName;
