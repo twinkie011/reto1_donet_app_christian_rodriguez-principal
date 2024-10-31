@@ -18,9 +18,7 @@ class LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Configuración de inicio de sesión con Google
-  final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId: '908843670295-u445d8ugr8d1vv7dhe7rndq7hubct9r4.apps.googleusercontent.com', // Reemplaza esto con tu propio Client ID
-  );
+  final GoogleSignIn googleSignIn = GoogleSignIn(); // Sin el clientId
 
   // Función de inicio de sesión con Google
   Future<void> signInWithGoogle() async {
@@ -36,9 +34,15 @@ class LoginPageState extends State<LoginPage> {
         );
 
         await _auth.signInWithCredential(credential);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Inicio de sesión cancelado')),
         );
       }
     } catch (e) {
@@ -48,6 +52,7 @@ class LoginPageState extends State<LoginPage> {
     }
   }
 
+  // Función para iniciar sesión con correo y contraseña
   void _login() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -56,10 +61,12 @@ class LoginPageState extends State<LoginPage> {
       );
 
       if (userCredential.user?.emailVerified == true) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -83,10 +90,12 @@ class LoginPageState extends State<LoginPage> {
   void _loginAnonymously() async {
     try {
       await _auth.signInAnonymously();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: ${e.message}")),
